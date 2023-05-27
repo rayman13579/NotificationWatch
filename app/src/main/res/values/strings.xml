@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">NotificationWatch</string>
+    <string name="title">Notifications:</string>
+    <string name="notificationTitle">Title</string>
+    <string name="notificationContent">Content</string>
+    <string name="notificationButton">add notification</string>
+</resources>
