@@ -14,4 +14,6 @@ dependencyResolutionManagement {
 }
 
 rootProject.name = "NotificationWatch"
-include(":app")
+include(":mobile")
+include(":wear")
+include(":common")

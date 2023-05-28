@@ -1,4 +1,4 @@
-package at.rayman.notificationwatch;
+package at.rayman.common;
 
 import java.io.Serializable;
 

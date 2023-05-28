@@ -7,23 +7,24 @@ import androidx.core.app.NotificationManagerCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.app.NotificationChannel;
-import android.app.NotificationManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.service.notification.StatusBarNotification;
 
 import java.util.Set;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
+import at.rayman.common.Notification;
 
 public class MainActivity extends AppCompatActivity {
 
 	private NotificationAdapter notificationAdapter;
 
-	private int notifTestId = 0;
+	private ExecutorService executorService;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -31,6 +32,7 @@ public class MainActivity extends AppCompatActivity {
 		setContentView(R.layout.activity_main);
 
 		requestNotificationAccess();
+		executorService = Executors.newSingleThreadExecutor();
 
 		RecyclerView recyclerView = findViewById(R.id.recyclerView);
 		recyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -39,7 +41,6 @@ public class MainActivity extends AppCompatActivity {
 
 		createNotifButton();
 		registerNotificationReceiver();
-		initNotifications();
 	}
 
 	private void createNotifButton() {
@@ -61,7 +62,9 @@ public class MainActivity extends AppCompatActivity {
 			@Override
 			public void onReceive(Context context, Intent intent) {
 				if (Action.ADD_NOTIFICATION.getAction().equals(intent.getAction())) {
-					notificationAdapter.addNotification((Notification) intent.getSerializableExtra("notification"));
+					Notification notification = (Notification) intent.getSerializableExtra("notification");
+					notificationAdapter.addNotification(notification);
+					executorService.execute(new RabbitMQTask(notification));
 				} else if (Action.REMOVE_NOTIFICATION.getAction().equals(intent.getAction())) {
 					notificationAdapter.removeNotification((Notification) intent.getSerializableExtra("notification"));
 				}
@@ -76,14 +79,7 @@ public class MainActivity extends AppCompatActivity {
 	@Override
 	protected void onDestroy() {
 		super.onDestroy();
-	}
-
-	private void initNotifications() {
-		notificationAdapter.addNotification(Notification.builder()
-			.id(String.valueOf(++notifTestId))
-			.title("test")
-			.content("content")
-			.build());
+		executorService.shutdown();
 	}
 
 	private void requestNotificationAccess() {
