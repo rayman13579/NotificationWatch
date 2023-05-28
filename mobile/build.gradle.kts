@@ -33,8 +33,6 @@ android {
 }
 
 dependencies {
-    implementation(libs.amqp.client) // RabbitMQ
-    implementation(libs.gson)
     implementation(project(mapOf("path" to ":common")))
 
     implementation(libs.appcompat)

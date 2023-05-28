@@ -30,6 +30,8 @@ android {
 }
 
 dependencies {
+    implementation(libs.amqp.client)
+    implementation(libs.gson)
 
     implementation(libs.appcompat)
     implementation(libs.material)

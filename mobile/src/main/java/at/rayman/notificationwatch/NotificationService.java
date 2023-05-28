@@ -4,6 +4,8 @@ import android.content.Intent;
 import android.service.notification.NotificationListenerService;
 import android.service.notification.StatusBarNotification;
 
+import at.rayman.common.Notification;
+
 public class NotificationService extends NotificationListenerService {
 
 	@Override
